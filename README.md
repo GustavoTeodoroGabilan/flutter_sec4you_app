@@ -1,8 +1,8 @@
-# 🛡️ Sec4You - Sistema de Monitoramento de Segurança
+# 🛡️ SecurityConnect - Sistema de Monitoramento de Segurança
 
 ## 📱 Sobre o Projeto
 
-O **Sec4You** é um aplicativo móvel desenvolvido em Flutter que oferece monitoramento de segurança em tempo real, focado na proteção de dados e autenticação segura. O app registra e monitora eventos de segurança, fornecendo insights valiosos sobre tentativas de login e atividades suspeitas.
+O **SecurityConnect** é um aplicativo móvel desenvolvido em Flutter que oferece monitoramento de segurança em tempo real, focado na proteção de dados e autenticação segura. O app registra e monitora eventos de segurança, fornecendo insights valiosos sobre tentativas de login e atividades suspeitas.
 
 ## ✨ Funcionalidades Principais
 
@@ -294,7 +294,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ## 👨‍💻 Desenvolvedores
 
-Desenvolvido pela SecurityConnect
+Desenvolvido pela Sec4You
 
 ## 🔄 Versão Atual
 
