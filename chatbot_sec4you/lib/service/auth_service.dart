@@ -2,6 +2,7 @@ import 'package:chatbot_sec4you/auth_exception.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'security_event_service.dart';
 
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -57,14 +58,32 @@ class AuthService with ChangeNotifier {
   Future<void> login(String email, String senha) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: senha);
+      
+      // ✅ Registra login bem-sucedido
+      await SecurityEventService.logLoginAttempt(
+        email: email,
+        success: true,
+      );
+      
     } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      
       if (e.code == 'user-not-found') {
-        throw AuthException('Email não encontrado. Cadastre-se.');
+        errorMessage = 'Email não encontrado. Cadastre-se.';
       } else if (e.code == 'wrong-password') {
-        throw AuthException('Senha incorreta. Tente novamente');
+        errorMessage = 'Senha incorreta. Tente novamente';
       } else {
-        throw AuthException('Erro ao logar: ${e.message}');
+        errorMessage = 'Erro ao logar: ${e.message}';
       }
+      
+      // ❌ Registra tentativa de login falhada
+      await SecurityEventService.logLoginAttempt(
+        email: email,
+        success: false,
+        errorMessage: errorMessage,
+      );
+      
+      throw AuthException(errorMessage);
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'security_alerts_screen_real.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -147,9 +148,57 @@ class _HomeScreenState extends State<HomeScreen> {
                           value: '1',
                           subtitle: 'Alerta de segurança',
                           color: purple,
+                          onTap: () {
+                            print('🔥 CARD CLICADO! Iniciando navegação...'); 
+                            try {
+                              print('Tentando navegar para SecurityAlertsScreenReal...');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    print('Construindo SecurityAlertsScreenReal...');
+                                    return SecurityAlertsScreenReal();
+                                  },
+                                ),
+                              ).then((value) {
+                                print('Navegação completada, valor retornado: $value');
+                              });
+                            } catch (e, stackTrace) {
+                              print('❌ ERRO na navegação: $e');
+                              print('StackTrace: $stackTrace');
+                              
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Erro ao abrir alertas: $e'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 24),
+                  // BOTÃO DE TESTE PARA CONFIRMAR FUNCIONALIDADE
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        print('✅ BOTÃO DE TESTE FUNCIONANDO!');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => SecurityAlertsScreenReal(),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.security),
+                      label: Text('🔧 TESTE: Abrir Alertas de Segurança'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: purple,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -159,12 +208,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// COMPONENTE REUTILIZÁVEL PARA OS CARDS DE INFO
+// COMPONENTE REUTILIZÁVEL PARA OS CARDS DE INFO - VERSÃO FUNCIONAL PERMANENTE
 class CardInfo extends StatelessWidget {
   final String title;
   final String value;
   final String subtitle;
   final Color color;
+  final VoidCallback? onTap;
 
   const CardInfo({
     super.key,
@@ -172,33 +222,85 @@ class CardInfo extends StatelessWidget {
     required this.value,
     required this.subtitle,
     required this.color,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(title, style: const TextStyle(color: Colors.white)),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              color: color,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+    print('🏗️ Construindo CardInfo - subtitle: $subtitle, onTap: ${onTap != null}');
+    
+    // Se tem onTap, retorna um botão clicável
+    if (onTap != null) {
+      print('✅ Criando card CLICÁVEL para: $subtitle');
+      return SizedBox(
+        height: 120,
+        child: ElevatedButton(
+          onPressed: () {
+            print('🚀 CARD CLICÁVEL ACIONADO: $subtitle');
+            onTap!();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF1A1A1A),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: color.withOpacity(0.8), width: 3),
             ),
+            padding: EdgeInsets.all(12),
+            elevation: 8,
           ),
-          Text(subtitle, style: const TextStyle(color: Colors.white70)),
-        ],
-      ),
-    );
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(title, style: const TextStyle(color: Colors.white)),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(subtitle, style: const TextStyle(color: Colors.white70)),
+                  const SizedBox(width: 4),
+                  Icon(Icons.touch_app, color: color, size: 18),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      // Card normal sem clique
+      print('📦 Criando card NORMAL para: $subtitle');
+      return Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(title, style: const TextStyle(color: Colors.white)),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                color: color,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(subtitle, style: const TextStyle(color: Colors.white70)),
+          ],
+        ),
+      );
+    }
   }
 }
