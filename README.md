@@ -298,7 +298,7 @@ Desenvolvido pela SecurityConnect
 
 ## 🔄 Versão Atual
 
-**v1.0.0** - Sistema básico de monitoramento de segurança implementado
+**v1.5.0** - Sistema estruturado e funcional para beta testers
 
 ---
 
